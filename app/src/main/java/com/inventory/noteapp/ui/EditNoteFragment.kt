@@ -34,7 +34,7 @@ class EditNoteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
 
@@ -106,19 +106,21 @@ class EditNoteFragment : Fragment() {
         if (item.itemId == R.id.delete_option_menu) {
 
             val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
+            var alertDialog = builder.create()
 
-            builder.setTitle("Delete Note").setMessage("Do you want to delete this note")
-            val alertDialog = builder.create()
-            builder.setPositiveButton("Yes") { _, _ ->
-                viewModel.viewModelScope.launch {
-                    viewModel.delete(selectedNote)
-                    alertDialog.dismiss()
-                    Toast.makeText(requireContext(), "Note Deleted", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToHomeFragment())
-                }
-            }
-                .setNegativeButton("No") { _, _ -> alertDialog.dismiss() }
-
+            alertDialog =
+                builder.setTitle("Delete Note").setMessage("Do you want to delete this note")
+                    .setPositiveButton("Yes") { _, _ ->
+                        viewModel.viewModelScope.launch {
+                            viewModel.delete(selectedNote)
+                            alertDialog.dismiss()
+                            Toast.makeText(requireContext(), "Note Deleted", Toast.LENGTH_SHORT)
+                                .show()
+                            findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToHomeFragment())
+                        }
+                    }
+                    .setNegativeButton("No") { _, _ -> alertDialog.dismiss() }.create()
+            alertDialog.show()
 
             /*   val bottomSheet = BottomSheetDialog(requireContext(),R.style.mybottom_dialog)
                bottomSheet.setContentView(R.layout.delete_dialog)
